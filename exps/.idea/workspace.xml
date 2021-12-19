@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="159b848f-e1fb-47cd-8ebf-baba329e439b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Exp301/CRC.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exp301/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/saveactions_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Exp301/Alter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Exp301/Verifier.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exp301/CRC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exp301/CRC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exp301/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exp301/Generator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,9 +47,11 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="settings.saveactions" />
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -76,7 +82,8 @@
       <option name="presentableId" value="Default" />
       <updated>1639640655656</updated>
       <workItem from="1639640657008" duration="21000" />
-      <workItem from="1639640724143" duration="6596000" />
+      <workItem from="1639640724143" duration="6635000" />
+      <workItem from="1639899782148" duration="5276000" />
     </task>
     <servers />
   </component>
