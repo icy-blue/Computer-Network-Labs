@@ -1,4 +1,4 @@
-package Exp301;
+package exp301;
 
 public class CRC {
     private String polynomial;

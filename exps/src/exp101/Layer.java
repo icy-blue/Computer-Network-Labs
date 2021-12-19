@@ -1,4 +1,4 @@
-package Exp101;
+package exp101;
 
 import java.util.Objects;
 
