@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="159b848f-e1fb-47cd-8ebf-baba329e439b" name="Changes" comment="flooding fin">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="159b848f-e1fb-47cd-8ebf-baba329e439b" name="Changes" comment="add git ignore">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/exp501/Flooding.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/exp501/Flooding.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +139,7 @@
       <updated>1639640655656</updated>
       <workItem from="1639640657008" duration="21000" />
       <workItem from="1639640724143" duration="6635000" />
-      <workItem from="1639899782148" duration="27932000" />
+      <workItem from="1639899782148" duration="28935000" />
     </task>
     <task id="LOCAL-00001" summary="CRC fin">
       <created>1639927085432</created>
@@ -182,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639993437160</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add git ignore">
+      <created>1639993520616</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1639993520616</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -204,7 +212,8 @@
     <MESSAGE value="reformat" />
     <MESSAGE value="CSMA/CD fin" />
     <MESSAGE value="flooding fin" />
-    <option name="LAST_COMMIT_MESSAGE" value="flooding fin" />
+    <MESSAGE value="add git ignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="add git ignore" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
