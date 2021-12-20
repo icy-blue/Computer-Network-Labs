@@ -10,7 +10,7 @@ public class Graph {
     private ArrayList<Router> routers;
     static final int inf = (int) 1e6;
 
-    Graph(int n, ArrayList<Router> routers) {
+    public Graph(int n, ArrayList<Router> routers) {
         this.n = n;
         this.routers = routers;
         this.map = new int[n][n];
@@ -23,7 +23,7 @@ public class Graph {
         }
     }
 
-    void addEdge(Edge edge) {
+    public void addEdge(Edge edge) {
         if (edge == null) return;
         int from = edge.from.id, to = edge.to.id;
         if (from < 0 || from >= n || to < 0 || to >= n) return;
@@ -51,15 +51,15 @@ public class Graph {
         return map[a.id][b.id];
     }
 
-    int getDistance(int a, int b) {
+    public int getDistance(int a, int b) {
         return map[a][b];
     }
 
-    ArrayList<Edge> getPointDistance(int p) {
+    ArrayList<Edge> getPointDistance(int p, int q) {
         ArrayList<Edge> edges = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (p == i || map[p][i] >= inf || map[i][n - 1] >= inf) continue;
-            edges.add(new Edge(routers.get(p), routers.get(i), map[p][i] + map[i][n - 1]));
+        for (Edge e : routers.get(p).edges) {
+            if (map[e.to.id][q] >= inf) continue;
+            edges.add(new Edge(routers.get(p), e.to, e.delay + map[e.to.id][q]));
         }
         edges.sort(Comparator.comparingInt((Edge a) -> a.delay));
         return edges;

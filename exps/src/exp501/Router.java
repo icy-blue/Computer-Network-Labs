@@ -3,11 +3,11 @@ package exp501;
 import java.util.ArrayList;
 
 public class Router {
-    ArrayList<Edge> edges = new ArrayList<>();
-    ArrayList<Packet> packets = new ArrayList<>();
+    public ArrayList<Edge> edges = new ArrayList<>();
+    public ArrayList<Packet> packets = new ArrayList<>();
     int id;
 
-    Router(int id) {
+    public Router(int id) {
         this.id = id;
     }
 

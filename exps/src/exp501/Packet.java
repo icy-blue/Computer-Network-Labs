@@ -12,7 +12,7 @@ public class Packet {
         this.last = last;
     }
 
-    Packet(Router from, Router to, Router last, int ttl, int time) {
+    public Packet(Router from, Router to, Router last, int ttl, int time) {
         this.ttl = ttl;
         this.from = from;
         this.to = to;
