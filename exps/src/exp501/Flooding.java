@@ -3,6 +3,7 @@ package exp501;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Flooding {
     static Scanner scan;
@@ -10,10 +11,10 @@ public class Flooding {
     static ArrayList<Router> routers;
     static Graph graph;
 
-    static int floodingK(int k) {
+    static int floodingK(int k, Consumer<Router> start, Consumer<Router> feedback) {
         graph.floyd();
         int time = 0, cnt = 0, now = 1;
-        routers.get(0).packets.add(new Packet(routers.get(0), routers.get(n - 1), routers.get(0), 10, 0));
+        if (start != null) start.accept(routers.get(0));
         while (now != 0) {
             for (Router r : routers) {
                 if (!r.available(time)) continue;
@@ -26,7 +27,11 @@ public class Flooding {
                         continue;
                     }
                     if (p.time > time) break;
-                    if (r.id != n - 1) cnt++;
+                    if (r.id != n - 1) {
+                        cnt++;
+                    } else if (feedback != null) {
+                        feedback.accept(routers.get(n - 1));
+                    }
                     now--;
                     int counter = k;
                     for (Edge edge : graph.getPointDistance(r.id)) {
@@ -43,12 +48,12 @@ public class Flooding {
         return cnt;
     }
 
-    static int flooding1() {
-        return floodingK(1);
+    static int flooding1(Consumer<Router> start, Consumer<Router> feedback) {
+        return floodingK(1, start, feedback);
     }
 
-    static int floodingAll() {
-        return floodingK(-1);
+    static int floodingAll(Consumer<Router> start, Consumer<Router> feedback) {
+        return floodingK(-1, start, feedback);
     }
 
     public static void main(String[] args) {
@@ -58,7 +63,8 @@ public class Flooding {
         routers = new ArrayList<>();
         graph = new Graph(n, routers);
         int k = scan.nextInt();
-        int cnt = floodingK(k);
+        Consumer<Router> start = (x) -> x.packets.add(new Packet(routers.get(0), routers.get(n - 1), routers.get(0), 10, 0));
+        int cnt = floodingK(k, start, null);
         for (int i = 0; i < n; i++) {
             routers.add(new Router(i));
         }
