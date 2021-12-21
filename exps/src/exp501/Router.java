@@ -6,6 +6,7 @@ public class Router {
     public ArrayList<Edge> edges = new ArrayList<>();
     public ArrayList<Packet> packets = new ArrayList<>();
     int id;
+    public static int BUFF_SIZE = 5;
 
     public Router(int id) {
         this.id = id;

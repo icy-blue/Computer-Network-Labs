@@ -1,12 +1,12 @@
 package exp502;
 
-import exp501.Edge;
-import exp501.Flooding;
-import exp501.Graph;
-import exp501.Router;
+import exp501.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Main {
@@ -26,12 +26,39 @@ public class Main {
             flooding.routers.get(a).edges.add(edge);
             flooding.graph.addEdge(edge);
         }
-        Consumer<Router> start = (x) -> flooding.sendPacket(0, flooding.n - 1, 2);
-        Consumer<Router> timeout = (x) -> flooding.sendPacket(0, flooding.n - 1, 5);
-        Consumer<Router> feedback = (x) -> flooding.sendPacket(flooding.n - 1, 0, 5);
-        int cnt = flooding.flooding1(start, 6, timeout, feedback);
-        System.out.println(flooding.graph.getDistance(0, flooding.n - 1));
-        System.out.println(cnt);
-        System.out.println((double) cnt / flooding.graph.getDistance(0, flooding.n - 1));
+        int sum = 100, timeup = 10;
+        ArrayList<SendingData> check = new ArrayList<>();
+        for (int i = 0; i < sum; i++) {
+            check.add(new SendingData(i, i, 3));
+        }
+        Consumer<Router> start = (x) -> {
+            for (SendingData data : check) {
+                flooding.sendPacket(0, flooding.n - 1, 6, data.data);
+            }
+        };
+        Consumer<Router> timeout = (x) -> {
+            check.sort(Comparator.comparingInt(a -> a.time));
+            Iterator<SendingData> it = check.iterator();
+            while (it.hasNext()) {
+                SendingData data = it.next();
+                if (data.time + timeup < flooding.time) {
+                    if (data.tries <= 0) {
+                        it.remove();
+                        continue;
+                    }
+                    flooding.sendPacket(0, flooding.n - 1, 6, data.data);
+                    data.tries--;
+                } else break;
+            }
+        };
+        BiConsumer<Router, Packet> feedback = (x, p) -> {
+            if (p.data < 0) {
+                check.removeIf(data -> data.data == -p.data);
+            } else {
+                flooding.sendPacket(flooding.n - 1, 0, 6, -p.data);
+            }
+        };
+        ArrayList<Integer> cnt = flooding.floodingK(3, start, timeout, feedback);
+        
     }
 }

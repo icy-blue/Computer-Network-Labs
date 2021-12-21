@@ -3,6 +3,7 @@ package exp501;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Flooding {
@@ -10,31 +11,30 @@ public class Flooding {
     public int m;
     public ArrayList<Router> routers;
     public Graph graph;
-    static int time = 0;
-    static int now = 0;
+    public int time = 0;
+    int now = 0;
 
-    public int floodingK(int k, Consumer<Router> start, int timeUp, Consumer<Router> timeout, Consumer<Router> feedback) {
+    public ArrayList<Integer> floodingK(int k, Consumer<Router> start, Consumer<Router> timeout,
+                                        BiConsumer<Router, Packet> feedback) {
         graph.floyd();
-        int cnt = 0, tries = 3;
+        ArrayList<Integer> cntArray = new ArrayList<>();
         if (start != null) start.accept(routers.get(0));
-        boolean feedback_executed = false;
         while (now != 0) {
+            int cnt = 0;
             for (Router r : routers) {
                 if (!r.available(time)) continue;
                 Iterator<Packet> iterator = r.packets.iterator();
                 while (iterator.hasNext()) {
                     Packet p = iterator.next();
+                    iterator.remove();
                     if (p.ttl <= 0) {
-                        iterator.remove();
                         now--;
                         continue;
                     }
                     if (p.time > time) break;
                     if (r.id == p.to.id) {
                         now--;
-                        iterator.remove();
-                        if (feedback != null && !feedback_executed) feedback.accept(routers.get(n - 1));
-                        feedback_executed = true;
+                        if (feedback != null) feedback.accept(routers.get(n - 1), p);
                         break;
                     }
                     cnt++;
@@ -42,36 +42,39 @@ public class Flooding {
                     int counter = k;
                     for (Edge edge : graph.getPointDistance(r.id, p.to.id)) {
                         if (p.last.equals(edge.to)) continue;
-                        edge.to.packets.add(new Packet(p, time + graph.getDistance(r.id, edge.to.id), r));
-                        now++;
+                        if (edge.to.packets.size() < Router.BUFF_SIZE) {
+                            edge.to.packets.add(new Packet(p, time + graph.getDistance(r.id, edge.to.id), r));
+                            now++;
+                        }
                         if (--counter == 0) break;
                     }
-                    iterator.remove();
                     break;
                 }
             }
             time++;
-            if ((time > timeUp || now == 0) && !feedback_executed && timeout != null && tries-- > 0) {
-                timeUp += time;
+            cntArray.add(cnt);
+            if (timeout != null) {
                 timeout.accept(routers.get(0));
             }
         }
 
-        return cnt;
+        return cntArray;
     }
 
-    public int flooding1(Consumer<Router> start, int timeUp, Consumer<Router> timeout, Consumer<Router> feedback) {
-        return floodingK(1, start, timeUp, timeout, feedback);
+    public ArrayList<Integer> flooding1(Consumer<Router> start, Consumer<Router> timeout,
+                                        BiConsumer<Router, Packet> feedback) {
+        return floodingK(1, start, timeout, feedback);
     }
 
-    public int floodingAll(Consumer<Router> start, int timeUp, Consumer<Router> timeout, Consumer<Router> feedback) {
-        return floodingK(-1, start, timeUp, timeout, feedback);
+    public ArrayList<Integer> floodingAll(Consumer<Router> start, Consumer<Router> timeout,
+                                          BiConsumer<Router, Packet> feedback) {
+        return floodingK(-1, start, timeout, feedback);
     }
 
-    public void sendPacket(int from, int to, int ttl) {
+    public void sendPacket(int from, int to, int ttl, int data) {
         now++;
         Router a = routers.get(from), b = routers.get(to);
-        a.packets.add(new Packet(a, b, a, ttl, time));
+        a.packets.add(new Packet(a, b, data, a, ttl, time));
     }
 
     public static void main(String[] args) {
@@ -94,10 +97,12 @@ public class Flooding {
             routers.get(a).edges.add(edge);
             graph.addEdge(edge);
         }
-        Consumer<Router> start = (x) -> sendPacket(0, n - 1, 100);
-        int cnt = floodingK(k, start, 100, null, null);
+        Consumer<Router> start = (x) -> sendPacket(0, n - 1, 10, 0);
+        ArrayList<Integer> cnt = floodingK(k, start, null, null);
+        int sum = 0;
+        for (int x : cnt) sum += x;
         System.out.println(graph.getDistance(0, n - 1));
         System.out.println(cnt);
-        System.out.println((double) cnt / graph.getDistance(0, n - 1));
+        System.out.println((double) sum / graph.getDistance(0, n - 1));
     }
 }
