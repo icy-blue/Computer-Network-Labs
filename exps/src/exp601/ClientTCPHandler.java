@@ -23,8 +23,8 @@ public class ClientTCPHandler extends TCPHandler implements Runnable {
 
     @Override
     public void run() {
-        try {
-            while (true) {
+        while (true) {
+            try {
                 Message message = (Message) reader.readObject();
                 switch (message.type) {
                     case Sent: {
@@ -47,10 +47,11 @@ public class ClientTCPHandler extends TCPHandler implements Runnable {
                         break;
                     }
                 }
+
+            } catch (SocketException ignored) {
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (SocketException ignored) {
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }
