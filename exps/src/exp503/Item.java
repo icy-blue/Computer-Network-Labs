@@ -12,8 +12,8 @@ public class Item implements Comparable<Item> {
     }
 
     public Item(String ip, String prefix, int outline) {
-        this.ip = IP.getIp(ip);
-        this.prefix = Long.bitCount(IP.getIp(prefix));
+        this.ip = IP.getLongIP(ip);
+        this.prefix = Long.bitCount(IP.getLongIP(prefix));
         this.outline = outline;
     }
 
@@ -34,7 +34,7 @@ public class Item implements Comparable<Item> {
     }
 
     public boolean match(String ip) {
-        return match(IP.getIp(ip));
+        return match(IP.getLongIP(ip));
     }
 
     public boolean match(long ip) {
