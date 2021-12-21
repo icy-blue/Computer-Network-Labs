@@ -18,20 +18,21 @@ public class ServerTCPHandler extends TCPHandler implements Runnable {
             reader = new ObjectInputStream(socket.getInputStream());
             while (true) {
                 Message data = (Message) reader.readObject();
+                System.out.println("Received type=" + data.type.toString() + ", message=" + data.getMessage() + ".");
                 switch (data.type) {
                     case Send: {
-                        data.message = new ChatData(data.message, server.name, ip).toString();
-                        chatData.add(data.message);
+                        data.setMessage(new ChatData(data.getMessage(), server.name, ip).toString());
+                        chatData.add(data.getMessage());
                         Message response = new Message(MessageType.Sent, "");
                         writer.writeObject(response);
-                        server.broadcast(socket, data);
+                        server.broadcast(this, data);
                         break;
                     }
                     case Quit: {
                         Message response = new Message(MessageType.Quited, server.name);
                         writer.writeObject(response);
                         socket.close();
-                        server.sockets.remove(socket);
+                        server.handlers.remove(this);
                         return;
                     }
                 }
@@ -44,5 +45,7 @@ public class ServerTCPHandler extends TCPHandler implements Runnable {
     ServerTCPHandler(Server server, Socket socket) {
         this.server = server;
         this.socket = socket;
+        Thread thread = new Thread(this);
+        thread.start();
     }
 }

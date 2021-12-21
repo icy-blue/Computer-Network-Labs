@@ -1,12 +1,8 @@
 package exp601;
 
-import exp503.IP;
-
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -14,47 +10,45 @@ public class Server {
     String name;
     int port;
     ServerSocket server;
-    ArrayList<Socket> sockets = new ArrayList<>();
+    ArrayList<ServerTCPHandler> handlers = new ArrayList<>();
 
     public Server(String name, int port) {
         this.name = name;
         this.port = port;
         try {
             this.server = new ServerSocket(port);
-            while (true) {
-                Socket socket = server.accept();
-                Thread thread = new Thread(new ServerTCPHandler(this, socket));
-                thread.start();
-            }
-        } catch (SocketTimeoutException ignored) {
+            Thread listener = new Thread(() -> {
+                while (true) {
+                    Socket socket = null;
+                    try {
+                        socket = server.accept();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    handlers.add(new ServerTCPHandler(this, socket));
+                }
+            });
+            listener.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void broadcast(Socket source, Message message) {
-        Iterator<Socket> it = sockets.iterator();
+    public void broadcast(ServerTCPHandler handler, Message message) {
+        Iterator<ServerTCPHandler> it = handlers.iterator();
         try {
             while (it.hasNext()) {
-                Socket i = it.next();
-                if (i == null || i.isClosed()) {
+                ServerTCPHandler i = it.next();
+                if (i == null || i.socket.isClosed()) {
                     it.remove();
                     continue;
                 }
-                if (source.equals(i)) continue;
-                ObjectOutputStream stream = new ObjectOutputStream(i.getOutputStream());
-                stream.writeObject(message);
+                if (handler.equals(i)) continue;
+                i.writer.writeObject(message);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public Socket getSocketByIP(long ip) {
-        for (Socket i : sockets) {
-            if (IP.getLongIP(i.getInetAddress().getHostAddress()) == ip) return i;
-        }
-        return null;
     }
 }

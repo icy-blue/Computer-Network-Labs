@@ -16,4 +16,17 @@ public class IP {
     public static String getStringIP(long ip) {
         return ((ip >> 24) & 255) + "." + ((ip >> 16) & 255) + "." + ((ip >> 8) & 255) + "." + (ip & 255);
     }
+
+    public static byte[] getBytesIP(String ip) {
+        byte[] ans = new byte[4];
+        String[] strs = ip.split("\\.");
+        for (int i = 0; i < 4; i++) {
+            ans[i] = (byte) (Integer.parseInt(strs[i]) & 0xff);
+        }
+        return ans;
+    }
+
+    public static byte[] getBytesIP(long ip) {
+        return getBytesIP(getStringIP(ip));
+    }
 }

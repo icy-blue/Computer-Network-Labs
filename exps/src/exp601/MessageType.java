@@ -12,7 +12,7 @@ public enum MessageType {
 
     static MessageType getTypeByName(String str) throws TypeUnknownException {
         for (MessageType type : MessageType.values()) {
-            if (type.toString().equals(str.strip())) return type;
+            if (type.toString().equalsIgnoreCase(str.strip())) return type;
         }
         throw new TypeUnknownException(str);
     }

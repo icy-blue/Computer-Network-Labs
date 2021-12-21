@@ -4,27 +4,37 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class Coordinator {
-    public static final int port = 4046;
+    public static int port = 35501;
     int unusedPort = 30000;
+    private static final int BUFF_LEN = 4096;
     ArrayList<Server> servers = new ArrayList<>();
     DatagramSocket datagramSocket;
     DatagramPacket receive, send;
 
     public Coordinator() {
+        try {
+            datagramSocket = new DatagramSocket(port);
+            byte[] tmp = new byte[BUFF_LEN];
+            receive = new DatagramPacket(tmp, tmp.length);
+        } catch (SocketException e) {
+            e.printStackTrace();
+            return;
+        }
         while (true) {
             try {
-                datagramSocket = new DatagramSocket(port);
                 datagramSocket.receive(receive);
                 Message message = Message.decode(receive.getData());
                 Message response;
+                System.out.println("Received type=" + message.type.toString() + ", message=" + message.getMessage() + ".");
                 switch (message.type) {
                     case Join: {
-                        Server server = getServerByName(message.message);
+                        Server server = getServerByName(message.getMessage());
                         if (server != null) {
-                            response = new Message(MessageType.Joined, Integer.toString(server.port));
+                            response = new Message(MessageType.Joined, server.port + " " + message.getMessage());
                         } else {
                             response = new Message(MessageType.Error, "Room not found.");
                         }
@@ -32,13 +42,13 @@ public class Coordinator {
                     }
                     case Creat: {
                         MessageType type = MessageType.Existed;
-                        Server server = getServerByName(message.message);
+                        Server server = getServerByName(message.getMessage());
                         if (server == null) {
                             type = MessageType.Created;
-                            server = new Server(message.message, ++unusedPort);
+                            server = new Server(message.getMessage(), ++unusedPort);
                             servers.add(server);
                         }
-                        response = new Message(type, Integer.toString(server.port));
+                        response = new Message(type, server.port + " " + message.getMessage());
                         break;
                     }
                     default: {
