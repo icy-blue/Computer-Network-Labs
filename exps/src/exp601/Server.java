@@ -23,7 +23,7 @@ public class Server {
             this.server = new ServerSocket(port);
             while (true) {
                 Socket socket = server.accept();
-                Thread thread = new Thread(new ServerThread(this, socket));
+                Thread thread = new Thread(new ServerTCPHandler(this, socket));
                 thread.start();
             }
         } catch (SocketTimeoutException ignored) {

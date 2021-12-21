@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public abstract class TCPListener {
+public abstract class TCPHandler {
     Socket socket;
     ObjectInputStream reader;
     ObjectOutputStream writer;

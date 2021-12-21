@@ -5,12 +5,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientTCPListener extends TCPListener implements Runnable {
+public class ClientTCPHandler extends TCPHandler implements Runnable {
     Client client;
     String name;
     Socket socket;
 
-    public ClientTCPListener(Client client, String ip, int port) throws IOException {
+    public ClientTCPHandler(Client client, String ip, int port) throws IOException {
         socket = new Socket(ip, port);
         this.client = client;
     }
@@ -33,7 +33,7 @@ public class ClientTCPListener extends TCPListener implements Runnable {
                         break;
                     }
                     case Quited: {
-                        ClientTCPListener chatroom = client.getChatroomByName(message.message);
+                        ClientTCPHandler chatroom = client.getChatroomByName(message.message);
                         chatroom.socket.close();
                         client.chatrooms.remove(chatroom);
                         System.out.println("Chatroom " + message.message + " quit successfully.");

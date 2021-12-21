@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ServerThread extends TCPListener implements Runnable {
+public class ServerTCPHandler extends TCPHandler implements Runnable {
     Server server;
 
     @Override
@@ -41,7 +41,7 @@ public class ServerThread extends TCPListener implements Runnable {
         }
     }
 
-    ServerThread(Server server, Socket socket) {
+    ServerTCPHandler(Server server, Socket socket) {
         this.server = server;
         this.socket = socket;
     }

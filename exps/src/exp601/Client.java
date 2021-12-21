@@ -15,7 +15,7 @@ public class Client {
     private static final int remoteUDPPort = 4046;
     DatagramSocket UDPSocket;
     DatagramPacket receive, send;
-    ArrayList<ClientTCPListener> chatrooms = new ArrayList<>();
+    ArrayList<ClientTCPHandler> chatrooms = new ArrayList<>();
 
     public Client() {
         try {
@@ -40,7 +40,7 @@ public class Client {
                     case Quit: {
                         System.out.print("Chatroom name:");
                         String name = scan.nextLine().strip();
-                        ClientTCPListener chatroom = getChatroomByName(name);
+                        ClientTCPHandler chatroom = getChatroomByName(name);
                         if (chatroom == null) {
                             System.out.println("You have not joined chatroom " + name);
                             break;
@@ -53,7 +53,7 @@ public class Client {
                     case Send: {
                         System.out.print("Chatroom name:");
                         String name = scan.nextLine().strip();
-                        ClientTCPListener chatroom = getChatroomByName(name);
+                        ClientTCPHandler chatroom = getChatroomByName(name);
                         System.out.print("Message:");
                         String data = scan.nextLine().strip();
                         Message message = new Message(MessageType.Send, data);
@@ -92,8 +92,8 @@ public class Client {
         UDPSocket.send(send);
     }
 
-    ClientTCPListener getChatroomByName(String name) {
-        for (ClientTCPListener i : chatrooms) {
+    ClientTCPHandler getChatroomByName(String name) {
+        for (ClientTCPHandler i : chatrooms) {
             if (i.name.equals(name)) return i;
         }
         return null;
@@ -110,7 +110,7 @@ public class Client {
                     case Joined:
                     case Existed: {
                         int port = Integer.parseInt(message.message);
-                        ClientTCPListener chatroom = new ClientTCPListener(this, remoteIP, port);
+                        ClientTCPHandler chatroom = new ClientTCPHandler(this, remoteIP, port);
                         chatrooms.add(chatroom);
                         break;
                     }
