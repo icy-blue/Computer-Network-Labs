@@ -12,8 +12,8 @@ public class Item implements Comparable<Item> {
     }
 
     public Item(String ip, String prefix, int outline) {
-        this.ip = getIp(ip);
-        this.prefix = Long.bitCount(getIp(prefix));
+        this.ip = IP.getIp(ip);
+        this.prefix = Long.bitCount(IP.getIp(prefix));
         this.outline = outline;
     }
 
@@ -21,18 +21,6 @@ public class Item implements Comparable<Item> {
     public int compareTo(Item o) {
         if (this.prefix != o.prefix) return o.prefix - this.prefix;
         return Long.compare(this.ip, o.ip);
-    }
-
-    private long getIp(String ip) {
-        long tmp = 0;
-        String[] data = ip.split("\\.");
-        assert data.length == 4;
-        for (int i = 0; i < 4; i++) {
-            int x = Integer.parseInt(data[i]);
-            tmp <<= 8;
-            tmp += x;
-        }
-        return tmp;
     }
 
     private long getMask(int prefix) {
@@ -46,7 +34,7 @@ public class Item implements Comparable<Item> {
     }
 
     public boolean match(String ip) {
-        return match(getIp(ip));
+        return match(IP.getIp(ip));
     }
 
     public boolean match(long ip) {
