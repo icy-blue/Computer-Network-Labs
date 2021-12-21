@@ -17,58 +17,61 @@ public class Client {
     DatagramPacket receive, send;
     ArrayList<ClientTCPListener> chatrooms = new ArrayList<>();
 
-    public Client() throws IOException {
-        Random random = new Random();
-        int localUDPPort = random.nextInt(200) + 40000;
-        UDPSocket = new DatagramSocket(localUDPPort);
-        Thread thread = new Thread(this::UDPHandler);
-        Scanner scan = new Scanner(System.in);
+    public Client() {
+        try {
+            Random random = new Random();
+            int localUDPPort = random.nextInt(200) + 40000;
+            UDPSocket = new DatagramSocket(localUDPPort);
+            Thread thread = new Thread(this::UDPHandler);
+            Scanner scan = new Scanner(System.in);
 
-        while (true) {
-            MessageType command = getCommand(scan);
-            switch (command) {
-                case Creat:
-                case Join: {
-                    System.out.print("Chatroom name:");
-                    String name = scan.nextLine().strip();
-                    Message message = new Message(command, name);
-                    sendMessage(message, InetAddress.getByAddress(remoteIP.getBytes(StandardCharsets.UTF_8)),
-                            remoteUDPPort);
-                    break;
-                }
-                case Quit: {
-                    System.out.print("Chatroom name:");
-                    String name = scan.nextLine().strip();
-                    ClientTCPListener chatroom = getChatroomByName(name);
-                    if (chatroom == null) {
-                        System.out.println("You have not joined chatroom " + name);
+            while (true) {
+                MessageType command = getCommand(scan);
+                switch (command) {
+                    case Creat:
+                    case Join: {
+                        System.out.print("Chatroom name:");
+                        String name = scan.nextLine().strip();
+                        Message message = new Message(command, name);
+                        sendMessage(message, InetAddress.getByAddress(remoteIP.getBytes(StandardCharsets.UTF_8)),
+                                remoteUDPPort);
                         break;
                     }
-                    Message message = new Message(MessageType.Quit, name);
-                    ObjectOutputStream output = chatroom.writer;
-                    output.writeObject(message);
-                    break;
-                }
-                case Send: {
-                    System.out.print("Chatroom name:");
-                    String name = scan.nextLine().strip();
-                    ClientTCPListener chatroom = getChatroomByName(name);
-                    System.out.print("Message:");
-                    String data = scan.nextLine().strip();
-                    Message message = new Message(MessageType.Send, data);
-                    ObjectOutputStream output = chatroom.writer;
-                    output.writeObject(message);
-                    break;
-                }
-                default: {
-                    System.out.println("Command " + command + " is invalid.");
+                    case Quit: {
+                        System.out.print("Chatroom name:");
+                        String name = scan.nextLine().strip();
+                        ClientTCPListener chatroom = getChatroomByName(name);
+                        if (chatroom == null) {
+                            System.out.println("You have not joined chatroom " + name);
+                            break;
+                        }
+                        Message message = new Message(MessageType.Quit, name);
+                        ObjectOutputStream output = chatroom.writer;
+                        output.writeObject(message);
+                        break;
+                    }
+                    case Send: {
+                        System.out.print("Chatroom name:");
+                        String name = scan.nextLine().strip();
+                        ClientTCPListener chatroom = getChatroomByName(name);
+                        System.out.print("Message:");
+                        String data = scan.nextLine().strip();
+                        Message message = new Message(MessageType.Send, data);
+                        ObjectOutputStream output = chatroom.writer;
+                        output.writeObject(message);
+                        break;
+                    }
+                    default: {
+                        System.out.println("Command " + command + " is invalid.");
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Client();
     }
 
@@ -101,7 +104,6 @@ public class Client {
             try {
                 UDPSocket.receive(receive);
                 Message message = Message.decode(receive.getData());
-                Message response;
                 System.out.println();
                 switch (message.type) {
                     case Created:

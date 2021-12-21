@@ -10,40 +10,45 @@ public class Coordinator {
     public static final int port = 4046;
     int unusedPort = 30000;
     ArrayList<Server> servers = new ArrayList<>();
-    DatagramSocket datagramSocket = new DatagramSocket(port);
+    DatagramSocket datagramSocket;
     DatagramPacket receive, send;
 
-    public Coordinator() throws TypeUnknownException, IOException {
+    public Coordinator() {
         while (true) {
-            datagramSocket.receive(receive);
-            Message message = Message.decode(receive.getData());
-            Message response;
-            switch (message.type) {
-                case Join: {
-                    Server server = getServerByName(message.message);
-                    if (server != null) {
-                        response = new Message(MessageType.Joined, Integer.toString(server.port));
-                    } else {
-                        response = new Message(MessageType.Error, "Room not found.");
+            try {
+                datagramSocket = new DatagramSocket(port);
+                datagramSocket.receive(receive);
+                Message message = Message.decode(receive.getData());
+                Message response;
+                switch (message.type) {
+                    case Join: {
+                        Server server = getServerByName(message.message);
+                        if (server != null) {
+                            response = new Message(MessageType.Joined, Integer.toString(server.port));
+                        } else {
+                            response = new Message(MessageType.Error, "Room not found.");
+                        }
+                        break;
                     }
-                    break;
-                }
-                case Creat: {
-                    MessageType type = MessageType.Existed;
-                    Server server = getServerByName(message.message);
-                    if (server == null) {
-                        type = MessageType.Created;
-                        server = new Server(message.message, ++unusedPort);
-                        servers.add(server);
+                    case Creat: {
+                        MessageType type = MessageType.Existed;
+                        Server server = getServerByName(message.message);
+                        if (server == null) {
+                            type = MessageType.Created;
+                            server = new Server(message.message, ++unusedPort);
+                            servers.add(server);
+                        }
+                        response = new Message(type, Integer.toString(server.port));
+                        break;
                     }
-                    response = new Message(type, Integer.toString(server.port));
-                    break;
+                    default: {
+                        response = new Message(MessageType.Error, "Type of " + message.type + "is ignored");
+                    }
                 }
-                default: {
-                    response = new Message(MessageType.Error, "Type of " + message.type + "is ignored");
-                }
+                sendMessage(response, receive.getAddress(), receive.getPort());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            sendMessage(response, receive.getAddress(), receive.getPort());
         }
     }
 
@@ -60,5 +65,9 @@ public class Coordinator {
         byte[] buff = message.encode();
         send = new DatagramPacket(buff, 0, buff.length, address, port);
         datagramSocket.send(send);
+    }
+
+    public static void main(String[] args) {
+        new Coordinator();
     }
 }
