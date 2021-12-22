@@ -72,5 +72,29 @@ public class Main {
         System.out.println((double) received.get() / first.get() / sum);
         System.out.printf("%.2f", (double) check.size() / sum * 100);
         System.out.println("%");
+        Plot.main(args);
     }
 }
+
+/**
+ * test cases
+ * 6 18
+ * 0 1 1
+ * 0 2 2
+ * 2 0 2
+ * 1 0 1
+ * 1 3 1
+ * 3 1 1
+ * 1 4 1
+ * 4 1 1
+ * 2 3 2
+ * 3 2 2
+ * 2 4 2
+ * 4 2 2
+ * 3 4 2
+ * 4 3 2
+ * 4 5 1
+ * 3 5 2
+ * 5 4 1
+ * 5 3 2
+ */

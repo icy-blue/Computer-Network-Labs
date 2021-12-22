@@ -89,11 +89,7 @@ public class Flooding {
         now++;
         a.packets.add(new Packet(a, b, data, a, ttl, time));
     }
-
-    public static void main(String[] args) {
-        new Flooding().run();
-    }
-
+    
     void run() {
         this.limit = true;
         Scanner scan = new Scanner(System.in);
