@@ -4,7 +4,7 @@ public class CRC {
     private String polynomial;
     private int k;
 
-    void setPolynomial(String polynomial) {
+    public void setPolynomial(String polynomial) {
         if (polynomial == null) {
             this.polynomial = null;
             this.k = -1;
@@ -14,11 +14,11 @@ public class CRC {
         }
     }
 
-    String getPolynomial() {
+    public String getPolynomial() {
         return this.polynomial;
     }
 
-    String generate(String data) {
+    public String generate(String data) {
         if (polynomial == null) return null;
         StringBuilder tmp = new StringBuilder(data + "0".repeat(k));
         StringBuilder ans = new StringBuilder(data);
@@ -34,7 +34,7 @@ public class CRC {
         return ans.toString();
     }
 
-    boolean check(String data) {
+    public boolean check(String data) {
         if (polynomial == null) return false;
         if (data.length() <= k) return false;
         StringBuilder tmp = new StringBuilder(data);
@@ -53,7 +53,7 @@ public class CRC {
         return true;
     }
 
-    CRC(String polynomial) {
+    public CRC(String polynomial) {
         setPolynomial(polynomial);
     }
 }
