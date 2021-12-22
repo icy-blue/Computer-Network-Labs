@@ -4,7 +4,6 @@ import exp501.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -29,36 +28,45 @@ public class Main {
         int sum = 100, timeup = 10;
         ArrayList<SendingData> check = new ArrayList<>();
         for (int i = 0; i < sum; i++) {
-            check.add(new SendingData(i, i, 3));
+            check.add(new SendingData(i * 3 + 1, i, 5));
+            check.add(new SendingData(i * 3 + 2, i, 5));
+            check.add(new SendingData(i * 3 + 3, i, 5));
+
         }
         Consumer<Router> start = (x) -> {
             for (SendingData data : check) {
-                flooding.sendPacket(0, flooding.n - 1, 6, data.data);
+                flooding.sendPacket(0, flooding.n - 1, data.time, 6, data.data);
             }
         };
         Consumer<Router> timeout = (x) -> {
+            int num = 0;
             check.sort(Comparator.comparingInt(a -> a.time));
-            Iterator<SendingData> it = check.iterator();
-            while (it.hasNext()) {
-                SendingData data = it.next();
-                if (data.time + timeup < flooding.time) {
-                    if (data.tries <= 0) {
-                        it.remove();
-                        continue;
-                    }
+            for (SendingData data : check) {
+                if (data.time + timeup <= flooding.time) {
+                    if (data.tries <= 0) continue;
+                    data.time = flooding.time;
                     flooding.sendPacket(0, flooding.n - 1, 6, data.data);
+                    num++;
+//                    System.out.println("timeout" + data.data);
                     data.tries--;
                 } else break;
             }
+            System.out.println(flooding.time + " " + num);
         };
         BiConsumer<Router, Packet> feedback = (x, p) -> {
             if (p.data < 0) {
                 check.removeIf(data -> data.data == -p.data);
             } else {
                 flooding.sendPacket(flooding.n - 1, 0, 6, -p.data);
+//                System.out.println("feedback " + p.data);
             }
         };
-        ArrayList<Integer> cnt = flooding.floodingK(3, start, timeout, feedback);
-        
+        ArrayList<Integer> cnt = flooding.floodingK(2, start, timeout, feedback);
+        System.out.println(cnt);
+        System.out.println(cnt.size());
+        for (SendingData data : check)
+            System.out.println(data);
+        System.out.println(check.size());
+
     }
 }

@@ -8,4 +8,9 @@ public class SendingData {
         this.time = time;
         this.tries = tries;
     }
+
+    @Override
+    public String toString() {
+        return "SendingData{" + "data=" + data + ", time=" + time + ", tries=" + tries + '}';
+    }
 }
